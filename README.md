@@ -25,16 +25,14 @@ Best open source peer-to-peer content sharer without internet and delay.
 ## 📷 Screenshots
 
 <img src="tl.png" width="100%"/>
-<img src="tp.png" width="60%"/>
-<img src="pp.jpg" width="39%"/>
-<img src="pl.jpg" width="100%"/>
-<img src="foldables.png" width="100%"/>
 
-## 🆚 Ambient Calculator VS OpenCalc and yetCalc
+## 🆚 SonicSync VS Miracast
 
-<a href="https://commoninja.site/644fb534-7d03-48e7-ba92-7c3d123b5958">
-  Click Here To See How Broken Is The UI
-</a>
+| Aspects | SonicSync | Miracast |
+| --- | --- | --- |
+| Speed | Instant | Delays & Laggy |
+| Connections (Devices) | Unlimited | 1 Only |
+| WiFi Direct | No | Yes |
 
 ## ☕ Support
 
