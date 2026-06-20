@@ -1,6 +1,6 @@
 <div align="center">
 
-<img width="200" src="icon.ico" alt="SonicSync" align="center">
+<img width="200" src="source\icon.ico" alt="SonicSync" align="center">
 
 # SonicSync
 Best open source peer-to-peer content sharer without internet and delay.  
