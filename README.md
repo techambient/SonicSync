@@ -36,7 +36,7 @@ Best open source peer-to-peer content sharer without internet and delay.
 
 ## ☕ Support
 
-Please star this repo as basic support. Support more for Ambient Calculator development by subscribing, watching, liking and sharing my YT channel. Thank you very much for your help! ❤️
+Please star this repo as basic support. Support more for SonicSync development by subscribing, watching, liking and sharing my YT channel. Thank you very much for your help! ❤️
 
 <a href="https://www.youtube.com/@techambient">
   Click Here To View my YouTube Channel
@@ -54,7 +54,7 @@ Pull requests are strongly recommended. For major changes, please open an issue 
 
 ## 🌎 Translations
 
-You can help translate Ambient Calculator by using this repo codes. 
+You can help translate SonicSync by using this repo codes. 
 
 ## 📜 License
 
@@ -62,8 +62,8 @@ This project is licensed under [MIT License](/LICENSE)
 
 ## ❔ Frequently Asked Questions
 
-1) Is Ambient Calculator beats OpenCalc or yetCalc in tablet UI? <br>
-   Answer: Yes, you can see the above section to see the broken UI.
+1) Do SonicSync faster and smoother than Miracast? <br>
+   Answer: Yes, Miracast offers laggy and unstable experiences.
 
-2) Is Ambient Calculator also known as "World Lightest Open Source Calculator"?
-   <br> Answer: Yes, Ambient Calculator (~1.8MB) beats OpenCalc (~2.2MB) and Fossify Calculator (~3MB). 
+2) Is SonicSync also known as "Best Content Sharer Platform"?
+   <br> Answer: Yes, because most of the screen share app uses around 1MB and SonicSync uses 100KB. 
