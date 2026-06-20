@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="meeting.png" width="100%"/>
+
 <img width="200" src="source\icon.ico" alt="SonicSync" align="center">
 
 # SonicSync
