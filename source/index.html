@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambient SonicSync</title>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #020617 100%);
+            --card-bg: rgba(30, 41, 59, 0.45);
+            --card-border: rgba(255, 255, 255, 0.06);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-primary: #3b82f6;
+            --accent-hover: #60a5fa;
+            --shadow-color: rgba(0, 0, 0, 0.4);
+            --status-bg: rgba(255, 255, 255, 0.04);
+            --color-idle: #cbd5e1;
+            --color-searching: #f59e0b;
+            --color-connected: #10b981;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; transition: all 0.2s ease; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+        }
+        .app-container {
+            width: 100%;
+            max-width: 500px;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 16px 32px 0 var(--shadow-color);
+        }
+        header { text-align: center; margin-bottom: 28px; }
+        header h1 { font-size: 26px; font-weight: 800; color: #fff; margin-bottom: 6px; }
+        header p { font-size: 14px; color: var(--text-secondary); }
+        .role-selector { display: flex; gap: 12px; margin-bottom: 24px; }
+        .btn-role {
+            flex: 1; padding: 14px; border: 1px solid var(--card-border);
+            background: var(--status-bg); color: var(--text-primary);
+            border-radius: 14px; font-weight: 600; cursor: pointer;
+        }
+        .btn-role.active { background: var(--accent-primary); border-color: transparent; }
+        .panel { margin-top: 16px; }
+        
+        /* Modern Select Dropdown */
+        select {
+            width: 100%; padding: 14px; background: var(--status-bg);
+            border: 1px solid var(--card-border); color: var(--text-primary);
+            border-radius: 14px; font-size: 15px; margin-bottom: 16px; outline: none;
+            cursor: pointer;
+        }
+        select option { background: #0f172a; color: white; }
+
+        input[type="text"] {
+            width: 100%; padding: 16px; background: var(--status-bg);
+            border: 1px solid var(--card-border); color: var(--text-primary);
+            border-radius: 14px; font-size: 32px; font-weight: 700;
+            text-align: center; letter-spacing: 12px; margin-bottom: 20px;
+        }
+        .file-label {
+            display: block; width: 100%; padding: 16px; background: var(--status-bg);
+            border: 1px dashed var(--card-border); color: var(--text-secondary);
+            border-radius: 14px; text-align: center; cursor: pointer; margin-bottom: 20px;
+        }
+        .file-label:hover { border-color: var(--accent-primary); color: #fff; }
+        .btn-action {
+            width: 100%; padding: 16px; border: none; border-radius: 14px;
+            background: var(--accent-primary); color: white; font-size: 16px;
+            font-weight: 600; cursor: pointer;
+        }
+        .btn-action:hover { background: var(--accent-hover); }
+        .btn-action:disabled { background: #4b5563; cursor: not-allowed; }
+        
+        .status-badge {
+            display: flex; align-items: center; gap: 12px; padding: 16px;
+            background: var(--status-bg); border: 1px solid var(--card-border);
+            border-radius: 14px; margin-bottom: 24px;
+        }
+        .status-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--color-idle); }
+        .status-dot.searching { background: var(--color-searching); }
+        .status-dot.connected { background: var(--color-connected); box-shadow: 0 0 12px var(--color-connected); }
+        .status-text { font-size: 14px; font-weight: 600; }
+        .hidden { display: none !important; }
+
+        /* Unified Media Display Window */
+        .media-window {
+            width: 100%; margin-top: 20px; border-radius: 16px;
+            overflow: hidden; border: 1px solid var(--card-border);
+            background: #000; display: flex; flex-direction: column;
+        }
+        video, audio { width: 100%; max-height: 280px; display: block; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <header>
+            <h1>Ambient SonicSync</h1>
+            <p>Pear-to-pear Real-Time Multi-Stream</p>
+        </header>
+
+        <div class="status-badge">
+            <div id="status-dot" class="status-dot"></div>
+            <div id="status-text" class="status-text">Select role to get started</div>
+        </div>
+
+        <div class="role-selector">
+            <button id="btn-sender" class="btn-role" onclick="initRole('sender')">Sender</button>
+            <button id="btn-receiver" class="btn-role" onclick="initRole('receiver')">Receiver</button>
+        </div>
+
+        <div id="sender-panel" class="panel hidden">
+            <label for="stream-type" style="font-size:13px; color:var(--text-secondary); display:block; margin-bottom:6px;">Select Input Resource:</label>
+            <select id="stream-type" onchange="toggleSourceInputs()">
+                <option value="screen">🖥️ Screen Share (+ Device Audio)</option>
+                <option value="camera">📷 Live Camera & Microphone</option>
+                <option value="mic">🎙️ Microphone Input Only</option>
+                <option value="file">📁 Local Video/Audio File</option>
+            </select>
+
+            <div id="file-input-wrapper" class="hidden">
+                <label for="media-file" id="file-name-label" class="file-label">📁 Pick Media File (MP4, MP3, etc.)</label>
+                <input type="file" id="media-file" accept="video/*,audio/*" style="display:none;" onchange="handleFileSelect()">
+            </div>
+            
+            <input type="text" id="sender-pin" maxlength="4" value="1234">
+            <button id="start-btn" class="btn-action" onclick="startSender()">Initialize & Broadcast</button>
+            
+            <div class="media-window hidden" id="local-preview-box">
+                <video id="local-preview" controls muted autoplay playsinline></video>
+            </div>
+        </div>
+
+        <div id="receiver-panel" class="panel hidden">
+            <input type="text" id="receiver-pin" maxlength="4" value="1234">
+            <button id="connect-btn" class="btn-action" onclick="startReceiver()">Establish Stream Connection</button>
+            
+            <div class="media-window hidden" id="remote-preview-box">
+                <video id="remote-media" autoplay controls playsinline></video>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let role = "";
+        let client;
+        let peerConnection;
+        let topic = "";
+        let localStream = null;
+        
+        const mqttBroker = "wss://broker.emqx.io:8084/mqtt"; 
+        const iceConfiguration = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] };
+
+        function initRole(chosenRole) {
+            role = chosenRole;
+            document.getElementById('btn-sender').classList.remove('active');
+            document.getElementById('btn-receiver').classList.remove('active');
+            document.getElementById(role === 'sender' ? 'btn-sender' : 'btn-receiver').classList.add('active');
+            
+            document.getElementById('sender-panel').classList.toggle('hidden', role !== 'sender');
+            document.getElementById('receiver-panel').classList.toggle('hidden', role !== 'receiver');
+            updateStatus("Role ready. Match your room PIN configurations.", "searching");
+        }
+
+        function updateStatus(text, statusClass = "") {
+            document.getElementById('status-text').textContent = text;
+            document.getElementById('status-dot').className = "status-dot " + statusClass;
+        }
+
+        function toggleSourceInputs() {
+            const type = document.getElementById('stream-type').value;
+            document.getElementById('file-input-wrapper').classList.toggle('hidden', type !== 'file');
+        }
+
+        function handleFileSelect() {
+            const fileInput = document.getElementById('media-file');
+            if(fileInput.files.length > 0) {
+                document.getElementById('file-name-label').textContent = "📦 " + fileInput.files[0].name;
+            }
+        }
+
+        // --- MULTI-SOURCE SENDER CORE ENGINE ---
+        async function startSender() {
+            const pin = document.getElementById('sender-pin').value.trim();
+            const mode = document.getElementById('stream-type').value;
+            document.getElementById('start-btn').disabled = true;
+            updateStatus("Hooking into resource drivers...", "searching");
+
+            try {
+                // Route input hooks using native WebRTC stream captures
+                if (mode === "screen") {
+                    // Requests system capture loop (Be sure to check "Share System Audio" when popup appears!)
+                    localStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+                } else if (mode === "camera") {
+                    localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                } else if (mode === "mic") {
+                    localStream = await navigator.mediaDevices.getUserMedia({ video: false, audio: true });
+                } else if (mode === "file") {
+                    const file = document.getElementById('media-file').files[0];
+                    if(!file) { alert("Please pick a file first!"); location.reload(); return; }
+                    
+                    const videoPlayer = document.getElementById('local-preview');
+                    videoPlayer.src = URL.createObjectURL(file);
+                    document.getElementById('local-preview-box').classList.remove('hidden');
+                    
+                    // Capture dynamic media frame tracks straight out of the player lifecycle
+                    await videoPlayer.play();
+                    if (videoPlayer.captureStream) localStream = videoPlayer.captureStream();
+                    else if (videoPlayer.mozCaptureStream) localStream = videoPlayer.mozCaptureStream();
+                }
+
+                // If input mode has video tracks, preview it locally
+                if(localStream.getVideoTracks().length > 0 && mode !== 'file') {
+                    const preview = document.getElementById('local-preview');
+                    preview.srcObject = localStream;
+                    document.getElementById('local-preview-box').classList.remove('hidden');
+                }
+
+                topic = "sonicsync/multistream/" + pin;
+                client = mqtt.connect(mqttBroker);
+
+                client.on('connect', () => {
+                    updateStatus("Stream mounted. Awaiting receiver handshake...", "searching");
+                    client.subscribe(topic);
+                });
+
+                client.on('message', async (t, msg) => {
+                    const payload = JSON.parse(msg.toString());
+                    if (payload.type === "receiver_ready") {
+                        setupWebRTCSender();
+                    } else if (payload.type === "webrtc_answer") {
+                        await peerConnection.setRemoteDescription(new RTCSessionDescription(payload.sdp));
+                        updateStatus("Broadcasting live video/audio! Back to CMD to stop.", "connected");
+                    } else if (payload.type === "ice_candidate" && peerConnection) {
+                        await peerConnection.addIceCandidate(new RTCIceCandidate(payload.candidate)).catch(e=>{});
+                    }
+                });
+
+            } catch (err) {
+                console.error(err);
+                alert("Resource Access Denied or Missing Core Stream Components.");
+                location.reload();
+            }
+        }
+
+        async function setupWebRTCSender() {
+            peerConnection = new RTCPeerConnection(iceConfiguration);
+            
+            // Push both incoming audio and video elements simultaneously down the P2P pipe
+            localStream.getTracks().forEach(track => {
+                peerConnection.addTrack(track, localStream);
+            });
+
+            peerConnection.onicecandidate = (event) => {
+                if (event.candidate) {
+                    client.publish(topic, JSON.stringify({ type: "ice_candidate", candidate: event.candidate }));
+                }
+            };
+
+            const offer = await peerConnection.createOffer();
+            await peerConnection.setLocalDescription(offer);
+            client.publish(topic, JSON.stringify({ type: "webrtc_offer", sdp: peerConnection.localDescription }));
+        }
+
+        // --- RECEIVER CORE ENGINE ---
+        function startReceiver() {
+            const pin = document.getElementById('receiver-pin').value.trim();
+            document.getElementById('connect-btn').disabled = true;
+            updateStatus("Connecting to stream coordinates...", "searching");
+
+            topic = "sonicsync/multistream/" + pin;
+            client = mqtt.connect(mqttBroker);
+
+            client.on('connect', () => {
+                client.subscribe(topic);
+                client.publish(topic, JSON.stringify({ type: "receiver_ready" }));
+            });
+
+            client.on('message', async (t, msg) => {
+                const payload = JSON.parse(msg.toString());
+
+                if (payload.type === "webrtc_offer") {
+                    peerConnection = new RTCPeerConnection(iceConfiguration);
+
+                    peerConnection.onicecandidate = (event) => {
+                        if (event.candidate) {
+                            client.publish(topic, JSON.stringify({ type: "ice_candidate", candidate: event.candidate }));
+                        }
+                    };
+
+                    // Automatically maps incoming tracks (Video, Screen, Mic, or files) seamlessly
+                    peerConnection.ontrack = (event) => {
+                        const targetMedia = document.getElementById('remote-media');
+                        if (!targetMedia.srcObject) {
+                            targetMedia.srcObject = event.streams[0];
+                            document.getElementById('remote-preview-box').classList.remove('hidden');
+                            updateStatus("Connected! Streaming content live.", "connected");
+                        }
+                    };
+
+                    await peerConnection.setRemoteDescription(new RTCSessionDescription(payload.sdp));
+                    const answer = await peerConnection.createAnswer();
+                    await peerConnection.setLocalDescription(answer);
+                    client.publish(topic, JSON.stringify({ type: "webrtc_answer", sdp: peerConnection.localDescription }));
+                } else if (payload.type === "ice_candidate" && peerConnection) {
+                    await peerConnection.addIceCandidate(new RTCIceCandidate(payload.candidate)).catch(e=>{});
+                }
+            });
+        }
+    </script>
+</body>
+</html>
