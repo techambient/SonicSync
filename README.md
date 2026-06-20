@@ -11,7 +11,7 @@ Best open source peer-to-peer content sharer without internet and delay.
 
 ## 📖 Features
 
-* Muiltiple Modes (Share screen + audio / Live Camera + Microphone / Microphone / Local Audio & Video)
+* Muiltiple Modes (Share screen + Audio / Live Camera + Microphone / Microphone / Local Audio & Video)
 * Lightweight, only 100KB! 
 * Receiver compatible with any device, any OS
 * Fast Speed & No Delay
