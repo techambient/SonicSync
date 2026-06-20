@@ -9,20 +9,16 @@ Best open source peer-to-peer content sharer without internet and delay.
 
 ## 📖 Features
 
-* None permissions required
+* Muiltiple Modes (Share screen + audio / Live Camera + Microphone / Microphone / Local Audio & Video)
 * Lightweight, only 100KB! 
-* Dark, Light, Material You and Google Material 3 theme
-* Scientific mode
-* History
-* Optimised for phone (single panel) and tablet (dual panel)
-* Quick settings tile
-* Fast Speed
+* Receiver compatible with any device, any OS
+* Fast Speed & No Delay
 * Zero Ads & Zero Tracking
 * 100% Offline
 
 ## ⚠️ Requirements
 
-* Android 10.0+
+* Windows 11 / Windows 10
 
 ## 📷 Screenshots
 
