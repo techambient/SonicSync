@@ -1,1 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SonicSync — Futuristic Offline Sharing</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#040508;--panel:rgba(255,255,255,.06);--border:rgba(255,255,255,.12);
+--txt:#fff;--muted:#b6bfca;--a:#3b82f6;--b:#7c3aed;--c:#06b6d4;
+}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);font-family:Inter,sans-serif;color:var(--txt);overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;background:
+radial-gradient(circle at 20% 20%,rgba(59,130,246,.22),transparent 35%),
+radial-gradient(circle at 80% 20%,rgba(124,58,237,.18),transparent 35%),
+radial-gradient(circle at 50% 100%,rgba(6,182,212,.18),transparent 40%);
+filter:blur(60px);z-index:-2}
+#intro{position:fixed;inset:0;background:#000;z-index:9999}
+#intro video{width:100%;height:100%;object-fit:cover}
+.skip{position:absolute;right:24px;top:24px;padding:12px 18px;border-radius:999px;border:1px solid #ffffff33;background:#ffffff14;color:#fff;backdrop-filter:blur(10px)}
+nav{position:fixed;top:0;left:0;right:0;z-index:99;padding:18px 5%;display:flex;justify-content:space-between;backdrop-filter:blur(18px);background:rgba(4,5,8,.45);border-bottom:1px solid var(--border)}
+.logo{font-weight:900;letter-spacing:.5px}
+.hero{min-height:100vh;position:relative;display:grid;place-items:center;text-align:center}
+.hero-bg{position:absolute;inset:0;background:url('https://github.com/techambient/SonicSync/raw/main/meeting.png') center/cover no-repeat}
+.hero-bg:after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,rgba(4,5,8,.2),rgba(4,5,8,.92))}
+.hero-content{position:relative;z-index:2;padding:140px 24px}
+.badge{display:inline-block;padding:10px 16px;border:1px solid var(--border);background:#ffffff0f;border-radius:999px;backdrop-filter:blur(20px)}
+h1{font-size:clamp(3rem,8vw,7rem);margin:18px 0;font-weight:900}
+.sub{max-width:850px;margin:auto;color:var(--muted);font-size:1.2rem;line-height:1.8}
+.cta{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:30px}
+.btn{padding:15px 24px;border-radius:18px;text-decoration:none;color:white;font-weight:700}
+.primary{background:linear-gradient(135deg,var(--a),var(--b))}
+.secondary{border:1px solid var(--border);background:#ffffff12}
+section{padding:100px 6%}
+.title{font-size:2.4rem;margin-bottom:30px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px}
+.card{background:var(--panel);border:1px solid var(--border);backdrop-filter:blur(24px);border-radius:28px;padding:28px;transition:.3s}
+.card:hover{transform:translateY(-6px)}
+.metric{font-size:3rem;font-weight:900;background:linear-gradient(135deg,#fff,#8ec5ff);-webkit-background-clip:text;color:transparent}
+table{width:100%;border-collapse:collapse}
+td,th{padding:18px;border:1px solid var(--border)}
+footer{text-align:center;padding:70px;color:var(--muted)}
+</style>
+</head>
+<body>
 
+<div id="intro">
+<video autoplay muted playsinline id="introVideo">
+<source src="intro.mp4" type="video/mp4">
+</video>
+<button class="skip" onclick="enterSite()">Skip</button>
+</div>
+
+<nav>
+<div class="logo">⚡ SonicSync</div>
+<div>100KB • Offline • Open Source</div>
+</nav>
+
+<div id="site" style="opacity:0">
+<header class="hero">
+<div class="hero-bg"></div>
+<div class="hero-content">
+<div class="badge">The Fastest Offline Content Sharing Platform</div>
+<h1>Share Anything.<br>Instantly.</h1>
+<p class="sub">Peer‑to‑peer screen, audio, camera and media sharing with virtually zero delay. No cloud. No ads. No tracking. Unlimited receivers.</p>
+<div class="cta">
+<a class="btn primary" href="https://github.com/techambient/SonicSync">View on GitHub</a>
+<a class="btn secondary" href="#features">Explore Features</a>
+</div>
+</div>
+</header>
+
+<section>
+<h2 class="title">Core Advantages</h2>
+<div class="grid">
+<div class="card"><div class="metric">100KB</div><p>Ultra lightweight application footprint.</p></div>
+<div class="card"><div class="metric">∞</div><p>Unlimited receiver devices.</p></div>
+<div class="card"><div class="metric">0%</div><p>Ads, telemetry and tracking.</p></div>
+<div class="card"><div class="metric">100%</div><p>Offline local sharing.</p></div>
+</div>
+</section>
+
+<section id="features">
+<h2 class="title">Features</h2>
+<div class="grid">
+<div class="card">🖥️ Screen + Audio Sharing</div>
+<div class="card">📷 Live Camera + Microphone</div>
+<div class="card">🎤 Microphone Broadcasting</div>
+<div class="card">🎬 Local Audio & Video Streaming</div>
+<div class="card">🌎 Any Device Receiver</div>
+<div class="card">⚡ Near-Zero Latency</div>
+</div>
+</section>
+
+<section>
+<h2 class="title">SonicSync vs Miracast</h2>
+<div class="card">
+<table>
+<tr><th>Aspect</th><th>SonicSync</th><th>Miracast</th></tr>
+<tr><td>Speed</td><td>Instant</td><td>Laggy</td></tr>
+<tr><td>Connections</td><td>Unlimited</td><td>1 Only</td></tr>
+<tr><td>Wi‑Fi Direct</td><td>No</td><td>Yes</td></tr>
+</table>
+</div>
+</section>
+
+<section>
+<div class="card" style="text-align:center">
+<h2>Built for Meetings, Education & Streaming</h2>
+<p style="color:var(--muted)">Stream content across nearby devices with a modern, lightweight and reliable experience.</p>
+</div>
+</section>
+
+<footer>
+SonicSync • MIT Licensed • TechAmbient
+</footer>
+</div>
+
+<script>
+function enterSite(){
+document.getElementById('intro').style.display='none';
+document.getElementById('site').style.opacity='1';
+document.getElementById('site').style.transition='opacity 1s ease';
+}
+document.getElementById('introVideo').onended=enterSite;
+</script>
+</body>
+</html>
