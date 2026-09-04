@@ -7,6 +7,10 @@
 # SonicSync
 Best open source peer-to-peer content sharer without internet and delay.  
 
+[![License](https://img.shields.io/github/license/techambient/SonicSync?style=for-the-badge)](LICENSE)
+[![Platform](https://img.shields.io/badge/Windows-7%2B-34A853?style=for-the-badge)]()
+[![Any Receiver](https://img.shields.io/badge/Mac/iOS-Android-4285F4?style=for-the-badge)]()
+
 <div align="left">
 
 ## 📖 Features
